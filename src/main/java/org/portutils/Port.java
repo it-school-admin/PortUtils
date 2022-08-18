@@ -1,4 +1,7 @@
 package org.portutils;
 
-public class Port {
+import java.util.List;
+
+public interface Port {
+    List<List<Integer>> getIndexes();
 }
