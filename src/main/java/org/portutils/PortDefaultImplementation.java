@@ -2,6 +2,9 @@ package org.portutils;
 
 import java.util.*;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.unmodifiableSortedSet;
 import static org.portutils.PortDescriptionElementParser.parsePortElement;
 
 /**
@@ -30,21 +33,18 @@ class PortDefaultImplementation implements Port {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        PortDefaultImplementation port = (PortDefaultImplementation) o;
-        return portIndexParts.equals(port.portIndexParts);
-    }
-
-    @Override
     public SortedSet<List<Integer>> getIndexes() {
         return new IndexGenerator(portIndexParts).generate();
     }
 
     @Override
     public List<SortedSet<Integer>> getNumbers() {
-        return portIndexParts;
+        List<SortedSet<Integer>> unmodifiableLists = new ArrayList();
+        for (SortedSet<Integer> numbers: portIndexParts)
+        {
+            unmodifiableLists.add(unmodifiableSortedSet(numbers));
+        }
+        return unmodifiableList(unmodifiableLists);
     }
 
     static class IndexGenerator {
@@ -60,6 +60,7 @@ class PortDefaultImplementation implements Port {
             {
                 indexMultiplicator.addNumbers(sequenceOfNumbers);
             }
+
             return indexMultiplicator.getResult();
         }
 
@@ -72,7 +73,7 @@ class PortDefaultImplementation implements Port {
                 if (prefixes.size() == 0)
                 {
                     for (Integer number: sequenceOfNumbers) {
-                        prefixes.add(Arrays.asList(number));
+                        prefixes.add(asList(number));
                     }
                 }
                 else
@@ -94,6 +95,12 @@ class PortDefaultImplementation implements Port {
             }
 
             public SortedSet<List<Integer>> getResult() {
+                List<List<Integer>> listWithUnmodifiableElements = new ArrayList<>();
+                for (List<Integer> index: indexes)
+                {
+                    listWithUnmodifiableElements.add(unmodifiableList(index));
+                }
+
                 TreeSet<List<Integer>> result = new TreeSet<>((o1, o2) -> {
                     for(int i = 0; i<o1.size(); i++)
                     {
@@ -106,14 +113,15 @@ class PortDefaultImplementation implements Port {
                         else if (firstNumber<secondNumber)
                         {
                             return -1;
-
                         }
-
                     }
                     return 0;
                 });
-                result.addAll(indexes);
-                return result;
+
+
+                result.addAll(listWithUnmodifiableElements);
+
+                return unmodifiableSortedSet(result);
             }
         }
     }

@@ -2,9 +2,7 @@ package org.portutils;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.SortedSet;
+import java.util.*;
 
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -59,13 +57,13 @@ class PortDefaultImplementationTest {
     }
 
     @Test
-    void toPortTestEmptyPortDescription_v2() {
+    void portCreationTestEmptyPortDescription_v2() {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> parsePort(EMPTY_PORT_DESCRIPTION_V2));
         assertEquals(PORT_DESCRIPTION_SHOULDNT_BE_EMPTY, exception.getMessage());
     }
 
     @Test
-    void toPortTestEmpty_NotNull_check() {
+    void portCreationTestEmpty_NotNull_check() {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> parsePort(null));
         assertEquals(PORT_DESCRIPTION_SHOULDNT_BE_NULL, exception.getMessage());
     }
@@ -82,8 +80,22 @@ class PortDefaultImplementationTest {
     }
 
     @Test
-    void getIndexesOneElement() {
+    void getIndexesOneElementTest() {
         assertTrue(comparingIndexesResultSetWithGivenList(ONE_ELEMENT_INDEXES_EXPECTED_RESULT, parsePort(ONE_ELEMENT_PORT_DESCRIPTION).getIndexes()));
+    }
+
+    @Test
+    void getIndexesModificationTest() {
+        assertThrows(UnsupportedOperationException.class,
+                () -> parsePort(BASE_PORT_DESCRIPTION).getIndexes().add(new ArrayList<>())
+        );
+    }
+
+    @Test
+    void getIndexesModificationTest_V2() {
+        assertThrows(UnsupportedOperationException.class,
+                () -> parsePort(BASE_PORT_DESCRIPTION).getIndexes().iterator().next().add(200)
+        );
     }
 
     @Test
@@ -97,11 +109,23 @@ class PortDefaultImplementationTest {
     }
 
     @Test
-    void getNumbersOneElement() {
+    void getNumbersOneElementTest() {
         assertTrue(comparingNumbersListWithGivenList(ONE_ELEMENT_NUMBERS_EXPECTED_RESULT, parsePort(ONE_ELEMENT_PORT_DESCRIPTION).getNumbers()));
     }
 
+    @Test
+    void getNumbersModificationTest() {
+        assertThrows(UnsupportedOperationException.class,
+                () -> parsePort(BASE_PORT_DESCRIPTION).getNumbers().add(new TreeSet<>())
+        );
+    }
 
+    @Test
+    void getNumbersModificationTest_V2() {
+        assertThrows(UnsupportedOperationException.class,
+                () -> parsePort(BASE_PORT_DESCRIPTION).getNumbers().iterator().next().add(200)
+        );
+    }
 
     //for checking results
     private boolean comparingIndexesResultSetWithGivenList(List<List<Integer>> expectedResult, SortedSet<List<Integer>> result) {
