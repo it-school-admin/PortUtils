@@ -6,7 +6,9 @@ import java.util.Arrays;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.portutils.PortDescriptionElementParser.STRING_WITH_NUMBERS_SHOULDNT_BE_EMPTY_MESSAGE;
 import static org.portutils.PortDescriptionElementParser.parsePortElement;
 
 class PortDescriptionElementParserTest {
@@ -21,10 +23,10 @@ class PortDescriptionElementParserTest {
     public static final String INTERVAL_WITH_WRONG_LIMITS = "95-90";
 
 
-    SortedSet<Integer> FIRST_TEST_DATA = new TreeSet<>(Arrays.asList(1, 4, 90, 91, 92, 93, 94, 95));
-    SortedSet<Integer> SECOND_TEST_DATA = new TreeSet<>(Arrays.asList(1, 2, 3, 4, 90, 91, 92, 93, 94, 95));
-    SortedSet<Integer> ONE_INTEGER = new TreeSet<>(Arrays.asList(90));
-    SortedSet<Integer> ONE_INTERVAL_RESULT = new TreeSet<>(Arrays.asList(1,2,3,4));
+    SortedSet<Integer> FIRST_TEST_DATA = new TreeSet<>(asList(1, 4, 90, 91, 92, 93, 94, 95));
+    SortedSet<Integer> SECOND_TEST_DATA = new TreeSet<>(asList(1, 2, 3, 4, 90, 91, 92, 93, 94, 95));
+    SortedSet<Integer> ONE_INTEGER = new TreeSet<>(asList(90));
+    SortedSet<Integer> ONE_INTERVAL_RESULT = new TreeSet<>(asList(1,2,3,4));
 
     @Test
     void parsePortElementOneInteger() {
@@ -40,13 +42,13 @@ class PortDescriptionElementParserTest {
     @Test
     void parsePortElementEmptyString() {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> parsePortElement(EMPTY_STRING));
-        assertEquals("String with numbers between \"[]\" and \"]\" brackets shouldn't be empty.", exception.getMessage());
+        assertEquals(STRING_WITH_NUMBERS_SHOULDNT_BE_EMPTY_MESSAGE, exception.getMessage());
     }
 
     @Test
     void parsePortElementEmptyStringWithSpaces() {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> parsePortElement(EMPTY_STRING_WITH_SPACES));
-        assertEquals("String with numbers between \"[]\" and \"]\" brackets shouldn't be empty.", exception.getMessage());
+        assertEquals(STRING_WITH_NUMBERS_SHOULDNT_BE_EMPTY_MESSAGE, exception.getMessage());
     }
 
     @Test
@@ -71,7 +73,8 @@ class PortDescriptionElementParserTest {
 
     @Test
     void parsePortElementWrongIntervalDeclaration() {
-        assertThrows(IllegalArgumentException.class, ()->parsePortElement(INTERVAL_WITH_WRONG_LIMITS));
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, ()->parsePortElement(INTERVAL_WITH_WRONG_LIMITS));
+        assertEquals("Wrong interval declaration: 95-90. First number should be less than second one.", exception.getMessage());
     }
 
 

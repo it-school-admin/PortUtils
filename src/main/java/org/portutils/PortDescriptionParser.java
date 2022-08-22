@@ -1,8 +1,6 @@
 package org.portutils;
 
-import java.util.List;
-
-public class PortIOUtil {
+public class PortDescriptionParser {
 
     //TODO javadoc
 
@@ -11,7 +9,8 @@ public class PortIOUtil {
      * @param numbersAndIntervals
      * @return
      */
-    public static Port generatePortFromStringList(String[] numbersAndIntervals)
+
+    public static Port parsePort(/*@NotNull*/ String[] numbersAndIntervals)
     {
         return new PortDefaultImplementation(numbersAndIntervals);
     }

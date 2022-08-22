@@ -4,14 +4,28 @@ import java.util.*;
 
 import static org.portutils.PortDescriptionElementParser.parsePortElement;
 
-public class PortDefaultImplementation implements Port{
-    private final List<SortedSet<Integer>> portSequences;
+/**
+ * This class has package local scope. For port creation use @{@link PortDescriptionParser#parsePort(String[])}
+ */
+class PortDefaultImplementation implements Port {
+    public static final String PORT_DESCRIPTION_SHOULDNT_BE_EMPTY = "Port description shouldn't be empty.";
+    public static final String PORT_DESCRIPTION_SHOULDNT_BE_NULL = "Port description shouldn't be null.";
+    private final List<SortedSet<Integer>> portIndexParts;
 
-    public PortDefaultImplementation(String[] numbersAndIntervals) {
-        portSequences = new ArrayList<>();
+    PortDefaultImplementation(String[] numbersAndIntervals) {
+        if (numbersAndIntervals == null)
+        {
+            throw new IllegalArgumentException(PORT_DESCRIPTION_SHOULDNT_BE_NULL);
+        }
+
+        if (numbersAndIntervals.length == 0)
+        {
+            throw new IllegalArgumentException(PORT_DESCRIPTION_SHOULDNT_BE_EMPTY);
+        }
+        portIndexParts = new ArrayList<>();
         for(String numberOrInterval :numbersAndIntervals)
         {
-            portSequences.add(parsePortElement(numberOrInterval));
+            portIndexParts.add(parsePortElement(numberOrInterval));
         }
     }
 
@@ -20,51 +34,27 @@ public class PortDefaultImplementation implements Port{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PortDefaultImplementation port = (PortDefaultImplementation) o;
-        return portSequences.equals(port.portSequences);
+        return portIndexParts.equals(port.portIndexParts);
     }
 
     @Override
-    public String toString() {
-        StringBuilder result = new StringBuilder("{");
-        Iterator<List<Integer>> indexesIterator = getIndexes().iterator();
-        while (indexesIterator.hasNext())
-        {
-            List<Integer> index = indexesIterator.next();
-            result.append("[");
-            Iterator<Integer> numbersIterator = index.iterator();
-            while (numbersIterator.hasNext())
-            {
-                result.append(numbersIterator.next());
-                if(numbersIterator.hasNext())
-                    result.append(", ");
-            }
-            result.append("]");
-            if (indexesIterator.hasNext())
-                result.append(", ");
-        }
-
-        result.append("}");
-        return result.toString();
+    public SortedSet<List<Integer>> getIndexes() {
+        return new IndexGenerator(portIndexParts).generate();
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(portSequences);
-    }
-
-    @Override
-    public List<List<Integer>> getIndexes() {
-        return new IndexGenerator(portSequences).generate();
+    public List<SortedSet<Integer>> getNumbers() {
+        return portIndexParts;
     }
 
     static class IndexGenerator {
         private final List<SortedSet<Integer>> portSequences;
 
-        public IndexGenerator(List<SortedSet<Integer>> portSequences) {
-            this.portSequences = portSequences;
+        public IndexGenerator(List<SortedSet<Integer>> portIndexes) {
+            this.portSequences = portIndexes;
         }
 
-        public List<List<Integer>> generate() {
+        public SortedSet<List<Integer>> generate() {
             IndexMultiplicator indexMultiplicator = new IndexMultiplicator();
             for (SortedSet<Integer> sequenceOfNumbers: portSequences)
             {
@@ -103,8 +93,27 @@ public class PortDefaultImplementation implements Port{
 
             }
 
-            public List<List<Integer>> getResult() {
-                return indexes;
+            public SortedSet<List<Integer>> getResult() {
+                TreeSet<List<Integer>> result = new TreeSet<>((o1, o2) -> {
+                    for(int i = 0; i<o1.size(); i++)
+                    {
+                        Integer firstNumber = o1.get(i);
+                        Integer secondNumber = o2.get(i);
+                        if (firstNumber>secondNumber)
+                        {
+                            return 1;
+                        }
+                        else if (firstNumber<secondNumber)
+                        {
+                            return -1;
+
+                        }
+
+                    }
+                    return 0;
+                });
+                result.addAll(indexes);
+                return result;
             }
         }
     }
