@@ -32,8 +32,6 @@ class PortDefaultImplementationTest {
     );
 
 
-
-
     public static final String[] ONE_ELEMENT_PORT_DESCRIPTION = {"1,3-5"};
     public static final List<List<Integer>> ONE_ELEMENT_INDEXES_EXPECTED_RESULT = asList(
             asList(1),

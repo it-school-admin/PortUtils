@@ -6,13 +6,13 @@ import java.util.TreeSet;
 import static java.lang.Integer.parseInt;
 import static java.lang.String.format;
 
-public class PortDescriptionElementParser {
+class PortDescriptionElementParser {
 
     public static final String INTERVALS_SEPARATOR = "-";
     public static final String STRING_WITH_NUMBERS_SHOULDNT_BE_EMPTY_MESSAGE = "String with numbers shouldn't be empty.";
     public static final String FIRST_NUMBER_SHOULD_BE_LESS_THAN_SECOND_ONE = " First number should be less than second one.";
 
-    public static SortedSet<Integer> parsePortElement(String portElementString)
+    static SortedSet<Integer> parsePortElement(String portElementString)
     {
         String trimmedPortElementString = portElementString.trim();
 
@@ -44,7 +44,6 @@ public class PortDescriptionElementParser {
         }
     }
 
-    //TODO check that first is less than second
     private static void generateInterval(int firstNumber, int secondNumber, SortedSet<Integer> result) {
         for (int i = firstNumber; i <= secondNumber; i++)
         {
