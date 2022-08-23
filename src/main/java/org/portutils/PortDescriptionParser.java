@@ -9,7 +9,7 @@ public class PortDescriptionParser {
      * The method returns Port element that is build with given array of indexes.
      * @param indexes array of strings that describes the port indexes. Each element can contains a single value,
      *                comma-separated list or interval description with dash-separator.
-     *                For example "90-95, 1, 4, 3,2". For more detailed information of syntax see {@link PortDescriptionElementParserTest}
+     *                For example "90-95, 1, 4, 3,2". For more detailed information of syntax see PortDescriptionElementParserTest
      *
      * @return - created with given indexes {@link Port} object
      */
