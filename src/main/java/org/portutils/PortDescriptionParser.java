@@ -6,6 +6,11 @@ package org.portutils;
 public class PortDescriptionParser {
 
     /**
+     * Dummy method for preventing PortDescriptionParser object initialization.
+     */
+    private PortDescriptionParser(){}
+
+    /**
      * The method returns Port element that is build with given array of indexes.
      * @param indexes array of strings that describes the port indexes. Each element can contains a single value,
      *                comma-separated list or interval description with dash-separator.
