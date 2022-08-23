@@ -33,11 +33,6 @@ class PortDefaultImplementation implements Port {
     }
 
     @Override
-    public SortedSet<List<Integer>> getIndexes() {
-        return new IndexGenerator(portIndexParts).generate();
-    }
-
-    @Override
     public List<SortedSet<Integer>> getNumbers() {
         List<SortedSet<Integer>> unmodifiableLists = new ArrayList();
         for (SortedSet<Integer> numbers: portIndexParts)
@@ -46,6 +41,12 @@ class PortDefaultImplementation implements Port {
         }
         return unmodifiableList(unmodifiableLists);
     }
+
+    @Override
+    public SortedSet<List<Integer>> getIndexes() {
+        return new IndexGenerator(portIndexParts).generate();
+    }
+
 
     static class IndexGenerator {
         private final List<SortedSet<Integer>> portSequences;
