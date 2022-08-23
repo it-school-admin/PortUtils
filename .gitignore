@@ -1,1 +1,6 @@
 /PortUtils.iml
+/target/test-classes/
+/target/maven-archiver/
+/target/generated-test-sources/
+/target/generated-sources/
+/target/classes/
