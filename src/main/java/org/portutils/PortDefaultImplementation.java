@@ -24,7 +24,7 @@ class PortDefaultImplementation implements Port {
             throw new IllegalArgumentException(PORT_DESCRIPTION_SHOULDNT_BE_EMPTY);
         }
         portIndexParts = createUnmodifiableCollection(generateNumberSequences(indexes));
-        generatedIndexes = generateIndexes(portIndexParts);
+        generatedIndexes = generateUnmodifiableCollectionOfIndexes(portIndexParts);
     }
 
     private List<SortedSet<Integer>> createUnmodifiableCollection(List<SortedSet<Integer>> portIndexPartsModifiable) {
@@ -52,8 +52,10 @@ class PortDefaultImplementation implements Port {
         return generatedIndexes;
     }
 
-    //Due to big complexity of algorithm think about to make implementation with parallel processing
-    public SortedSet<List<Integer>> generateIndexes(List<SortedSet<Integer>> portIndexParts) {
+    //Due to big complexity of algorithm think about to make implementation with parallel processing.
+    //If ports are indexing with huge amount of data it seems that it is possible to divide task of generating indexes
+    //into parts and generate prefixes and suffixes of indexes separately and combine them after that.
+    public SortedSet<List<Integer>> generateUnmodifiableCollectionOfIndexes(List<SortedSet<Integer>> portIndexParts) {
         IndexMultiplicator indexMultiplicator = new IndexMultiplicator();
         portIndexParts.forEach(indexMultiplicator::addNumbers);
         return indexMultiplicator.getResult();
