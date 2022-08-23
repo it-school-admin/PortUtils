@@ -2,11 +2,11 @@ package org.portutils;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.portutils.PortDescriptionElementParser.STRING_WITH_NUMBERS_SHOULDNT_BE_EMPTY_MESSAGE;
 import static org.portutils.PortDescriptionElementParser.parsePortElement;
@@ -25,7 +25,7 @@ class PortDescriptionElementParserTest {
 
     SortedSet<Integer> FIRST_TEST_DATA = new TreeSet<>(asList(1, 4, 90, 91, 92, 93, 94, 95));
     SortedSet<Integer> SECOND_TEST_DATA = new TreeSet<>(asList(1, 2, 3, 4, 90, 91, 92, 93, 94, 95));
-    SortedSet<Integer> ONE_INTEGER = new TreeSet<>(asList(90));
+    SortedSet<Integer> ONE_INTEGER = new TreeSet<>(singletonList(90));
     SortedSet<Integer> ONE_INTERVAL_RESULT = new TreeSet<>(asList(1,2,3,4));
 
     @Test

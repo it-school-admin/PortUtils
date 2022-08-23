@@ -8,7 +8,7 @@ import static java.util.Collections.unmodifiableSortedSet;
 import static org.portutils.PortDescriptionElementParser.parsePortElement;
 
 /**
- * This class has package local scope. For port creation use @{@link PortDescriptionParser#parsePort(String[])}
+ * This class has package local scope. For port creation use {@link PortDescriptionParser#parsePort(String[])}
  */
 class PortDefaultImplementation implements Port {
     public static final String PORT_DESCRIPTION_SHOULDNT_BE_EMPTY = "Port description shouldn't be empty.";

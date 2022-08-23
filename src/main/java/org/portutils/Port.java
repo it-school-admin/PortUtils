@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.SortedSet;
 
 /**
- * Main interface that implements port functionality that can be created with @{@link PortDescriptionParser}
+ * Main interface that implements port functionality that can be created with {@link PortDescriptionParser}
  */
 public interface Port {
 
