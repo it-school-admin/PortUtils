@@ -2,10 +2,9 @@ package org.portutils;
 
 import java.util.*;
 
-import static java.util.Arrays.asList;
-import static java.util.Collections.unmodifiableList;
-import static java.util.Collections.unmodifiableSortedSet;
-import static org.portutils.PortDescriptionElementParser.parsePortElement;
+import static java.util.Arrays.stream;
+import static java.util.Collections.*;
+import static java.util.stream.Collectors.toList;
 
 /**
  * This class has package local scope. For port creation use {@link PortDescriptionParser#parsePort(String[])}
@@ -14,37 +13,46 @@ class PortDefaultImplementation implements Port {
     public static final String PORT_DESCRIPTION_SHOULDNT_BE_EMPTY = "Port description shouldn't be empty.";
     public static final String PORT_DESCRIPTION_SHOULDNT_BE_NULL = "Port description shouldn't be null.";
     private final List<SortedSet<Integer>> portIndexParts;
+    private final SortedSet<List<Integer>> generatedIndexes;
 
-    PortDefaultImplementation(String[] numbersAndIntervals) {
-        if (numbersAndIntervals == null)
+    PortDefaultImplementation(String[] indexes) {
+        if (indexes == null)
         {
             throw new IllegalArgumentException(PORT_DESCRIPTION_SHOULDNT_BE_NULL);
         }
 
-        if (numbersAndIntervals.length == 0)
+        if (indexes.length == 0)
         {
             throw new IllegalArgumentException(PORT_DESCRIPTION_SHOULDNT_BE_EMPTY);
         }
-        portIndexParts = new ArrayList<>();
-        for(String numberOrInterval :numbersAndIntervals)
+        portIndexParts = createUnmodifiableCollection(generateNumberSequences(indexes));
+        generatedIndexes = new IndexGenerator(portIndexParts).generate();
+    }
+
+    private List<SortedSet<Integer>> createUnmodifiableCollection(List<SortedSet<Integer>> portIndexPartsModifiable) {
+        final List<SortedSet<Integer>> portIndexParts;
+        List<SortedSet<Integer>> unmodifiableLists = new ArrayList<>();
+        for (SortedSet<Integer> numbers: portIndexPartsModifiable)
         {
-            portIndexParts.add(parsePortElement(numberOrInterval));
+            unmodifiableLists.add(unmodifiableSortedSet(numbers));
         }
+
+        portIndexParts = unmodifiableList(unmodifiableLists);
+        return portIndexParts;
+    }
+
+    private List<SortedSet<Integer>> generateNumberSequences(String[] indexes) {
+        return stream(indexes).map(PortDescriptionElementParser::parsePortElement).collect(toList());
     }
 
     @Override
     public List<SortedSet<Integer>> getNumbers() {
-        List<SortedSet<Integer>> unmodifiableLists = new ArrayList();
-        for (SortedSet<Integer> numbers: portIndexParts)
-        {
-            unmodifiableLists.add(unmodifiableSortedSet(numbers));
-        }
-        return unmodifiableList(unmodifiableLists);
+        return portIndexParts;
     }
 
     @Override
     public SortedSet<List<Integer>> getIndexes() {
-        return new IndexGenerator(portIndexParts).generate();
+        return generatedIndexes;
     }
 
 
@@ -74,7 +82,7 @@ class PortDefaultImplementation implements Port {
                 if (prefixes.size() == 0)
                 {
                     for (Integer number: sequenceOfNumbers) {
-                        prefixes.add(asList(number));
+                        prefixes.add(singletonList(number));
                     }
                 }
                 else
@@ -84,8 +92,7 @@ class PortDefaultImplementation implements Port {
                     {
                         for (Integer number: sequenceOfNumbers)
                         {
-                            List<Integer> newIndex = new ArrayList<>();
-                            newIndex.addAll(index);
+                            List<Integer> newIndex = new ArrayList<>(index);
                             newIndex.add(number);
                             newIndexes.add(newIndex);
                         }
@@ -101,6 +108,11 @@ class PortDefaultImplementation implements Port {
                 {
                     listWithUnmodifiableElements.add(unmodifiableList(index));
                 }
+
+                //Tree set is used in order to give a interface with strict contract. In order to
+                // increase performance it is possible not to use TreeSet, just to use list.
+                //Using algorithm gives an ability to get sorted results wit simple List.
+                //But it seems that decreasing of performance with using TreeSet don't affect performance dramatically.
 
                 TreeSet<List<Integer>> result = new TreeSet<>((o1, o2) -> {
                     for(int i = 0; i<o1.size(); i++)
