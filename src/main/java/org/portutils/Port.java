@@ -9,14 +9,15 @@ import java.util.SortedSet;
 public interface Port {
 
     /**
+     * @return unmodifiable list of sorted numbers that the result of the parsing given descriptions. Each element
+     * of the list is the unmodifiable sorted set.
+     */
+    List<SortedSet<Integer>> getNumbers();
+
+    /**
      * @return unmodifiable sorted collection of indexes that is combination of given description.
      * Each element of resulting set is unmodifiable list.
      */
     SortedSet<List<Integer>> getIndexes();
 
-    /**
-     * @return unmodifiable list of sorted numbers that the result of the parsing given descriptions. Each element
-     * of the list is the unmodifiable sorted set.
-     */
-    List<SortedSet<Integer>> getNumbers();
 }
